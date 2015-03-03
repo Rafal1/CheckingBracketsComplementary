@@ -15,20 +15,15 @@ public class Main {
         }
 
 
-
         //for input over the length of 2^31-1 characters
-        bracketsMapLongInput = new HashMap<Character, Long>();
-        bracketsMapLongInput.put('(', Long.valueOf(0));
-        bracketsMapLongInput.put(')', Long.valueOf(0));
-        bracketsMapLongInput.put('[', Long.valueOf(0));
-        bracketsMapLongInput.put(']', Long.valueOf(0));
-
         //devide and conquer - devide a really big input to pieces
         // todo write special function to devide input from file
         final Integer pieceSize = 5000;
         String[] pieces = new String[2];
         pieces[0] = getStringWithLengthAndFilledWithCharacter(pieceSize, '[');
         pieces[1] = getStringWithLengthAndFilledWithCharacter(pieceSize, ']');
+
+        initHashMap();
         for (int i = 0; i < pieces.length; i++) {
             checkBracketsComplementaryLongInput(pieces[i]);
         }
@@ -36,6 +31,8 @@ public class Main {
         if (!bracketsMapLongInput.get('(').equals(Long.valueOf(0)) || !bracketsMapLongInput.get('[').equals(Long.valueOf(0))) {
             result = false;
         }
+        bracketsMapLongInput.clear();
+
         System.out.println("checkBracketsComplementaryLongInput() - " + result);
     }
 
@@ -46,6 +43,14 @@ public class Main {
             return new String(array);
         }
         return "";
+    }
+
+    private static void initHashMap() {
+        bracketsMapLongInput = new HashMap<Character, Long>();
+        bracketsMapLongInput.put('(', Long.valueOf(0));
+        bracketsMapLongInput.put(')', Long.valueOf(0));
+        bracketsMapLongInput.put('[', Long.valueOf(0));
+        bracketsMapLongInput.put(']', Long.valueOf(0));
     }
 
     /*
@@ -88,7 +93,7 @@ public class Main {
     }
 
     /*
-        One HashMap for many ivokes
+        One global HashMap for many pieces
     */
     public static void checkBracketsComplementaryLongInput(String s) {
         if (bracketsMapLongInput == null) {
