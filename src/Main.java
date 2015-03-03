@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
-    private static HashMap<Character, Long> bracketsMapLongInput;
+//    private static;
 
     public static void main(String[] args) {
 
@@ -17,23 +17,26 @@ public class Main {
 
         //for input over the length of 2^31-1 characters
         //devide and conquer - devide a really big input to pieces
-        // todo write special function to devide input from file
+
+        // todo write special function to get input from file
         final Integer pieceSize = 5000;
         String[] pieces = new String[2];
         pieces[0] = getStringWithLengthAndFilledWithCharacter(pieceSize, '[');
         pieces[1] = getStringWithLengthAndFilledWithCharacter(pieceSize, ']');
-
-        initHashMap();
+        // I didn't want to make a HashMap a static field in that class
+        HashMap<Character, Long> bracketsMapLongInput = initHashMap();
         for (int i = 0; i < pieces.length; i++) {
-            checkBracketsComplementaryLongInput(pieces[i]);
+            bracketsMapLongInput = checkBracketsComplementaryLongInput(pieces[i], bracketsMapLongInput);
         }
-        Boolean result = true;
-        if (!bracketsMapLongInput.get('(').equals(Long.valueOf(0)) || !bracketsMapLongInput.get('[').equals(Long.valueOf(0))) {
-            result = false;
-        }
-        bracketsMapLongInput.clear();
+        System.out.println("checkBracketsComplementaryLongInput() - " + checkBracketsComplementaryLongInputResult(bracketsMapLongInput));
 
-        System.out.println("checkBracketsComplementaryLongInput() - " + result);
+
+        pieces[1] = getStringWithLengthAndFilledWithCharacter(pieceSize, 'x');
+        bracketsMapLongInput = initHashMap();
+        for (int i = 0; i < pieces.length; i++) {
+            bracketsMapLongInput = checkBracketsComplementaryLongInput(pieces[i], bracketsMapLongInput);
+        }
+        System.out.println("checkBracketsComplementaryLongInput() - " + checkBracketsComplementaryLongInputResult(bracketsMapLongInput));
     }
 
     private static String getStringWithLengthAndFilledWithCharacter(int length, char charToFill) {
@@ -45,12 +48,23 @@ public class Main {
         return "";
     }
 
-    private static void initHashMap() {
-        bracketsMapLongInput = new HashMap<Character, Long>();
+    private static HashMap initHashMap() {
+        HashMap<Character, Long> bracketsMapLongInput = new HashMap<Character, Long>();
         bracketsMapLongInput.put('(', Long.valueOf(0));
         bracketsMapLongInput.put(')', Long.valueOf(0));
         bracketsMapLongInput.put('[', Long.valueOf(0));
         bracketsMapLongInput.put(']', Long.valueOf(0));
+
+        return bracketsMapLongInput;
+    }
+
+    private static Boolean checkBracketsComplementaryLongInputResult(HashMap bracketsMapLongInput) {
+        if (!bracketsMapLongInput.get('(').equals(Long.valueOf(0)) || !bracketsMapLongInput.get('[').equals(Long.valueOf(0))) {
+            bracketsMapLongInput.clear();
+            return false;
+        }
+        bracketsMapLongInput.clear();
+        return true;
     }
 
     /*
@@ -92,12 +106,9 @@ public class Main {
         return true;
     }
 
-    /*
-        One global HashMap for many pieces
-    */
-    public static void checkBracketsComplementaryLongInput(String s) {
+    public static HashMap checkBracketsComplementaryLongInput(String s, HashMap<Character, Long> bracketsMapLongInput) {
         if (bracketsMapLongInput == null) {
-            return;
+            return null;
         }
         for (int i = 0; i < s.length(); i++) {
             for (Map.Entry<Character, Long> entry : bracketsMapLongInput.entrySet()) {
@@ -116,5 +127,6 @@ public class Main {
                 }
             }
         }
+        return bracketsMapLongInput;
     }
 }
