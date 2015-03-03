@@ -23,6 +23,7 @@ public class Main {
         String[] pieces = new String[2];
         pieces[0] = getStringWithLengthAndFilledWithCharacter(pieceSize, '[');
         pieces[1] = getStringWithLengthAndFilledWithCharacter(pieceSize, ']');
+
         // I didn't want to make a HashMap a static field in that class
         HashMap<Character, Long> bracketsMapLongInput = initHashMap();
         for (int i = 0; i < pieces.length; i++) {
@@ -59,6 +60,9 @@ public class Main {
     }
 
     private static Boolean checkBracketsComplementaryLongInputResult(HashMap bracketsMapLongInput) {
+        if (bracketsMapLongInput == null) {
+            return false;
+        }
         if (!bracketsMapLongInput.get('(').equals(Long.valueOf(0)) || !bracketsMapLongInput.get('[').equals(Long.valueOf(0))) {
             bracketsMapLongInput.clear();
             return false;
@@ -115,11 +119,17 @@ public class Main {
                 if (s.charAt(i) == entry.getKey()) {
                     if (entry.getKey().equals(')')) {
                         Long closeRange = bracketsMapLongInput.get('(') - Long.valueOf(1);
+                        if (closeRange < 0) {
+                            return null;
+                        }
                         bracketsMapLongInput.replace('(', closeRange);
                         continue;
                     }
                     if (entry.getKey().equals(']')) {
                         Long closeRange = bracketsMapLongInput.get('[') - Long.valueOf(1);
+                        if (closeRange < 0) {
+                            return null;
+                        }
                         bracketsMapLongInput.replace('[', closeRange);
                         continue;
                     }
